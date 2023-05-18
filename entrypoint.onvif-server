@@ -1,0 +1,22 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+# Configure: onvif-server
+if [[ ! -e "${EP_RUN}" ]] ; then
+	log "Configuring $(basename "${0}") for first run ..."
+
+	# Generate keypairs ...
+	generate_rsakey onvif-server
+
+	ln --symbolic /etc/ssl/certs/onvif-serverca.crt /usr/share/ca-certificates/
+	echo onvif-serverca.crt >> /etc/ca-certificates.conf
+	update-ca-certificates
+
+	path="${ONVIF_SERVER_CONFIG}/config.xml"
+	if [[ -f "${path}" ]] ; then
+		log "Deploying: ${path} ..."
+		cp --force "${path}" "${ONVIF_SERVER_HOME}/"
+	fi
+fi
+

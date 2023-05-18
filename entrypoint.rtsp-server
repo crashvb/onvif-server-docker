@@ -1,0 +1,14 @@
+#!/bin/bash
+
+set -e -o pipefail
+
+# Configure: rtsp-server
+if [[ ! -e "${EP_RUN}" ]] ; then
+	log "Configuring $(basename "${0}") for first run ..."
+
+	if [[ -z "${ENABLE_RTSP_SERVER}" ]] ; then
+		log "Disabling: rtsp-server ..."
+		rm --force /etc/supervisor/conf.d/rtsp-server.conf
+	fi
+fi
+
